@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>fiesta hawaiana – mis 18 años – leandro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=pacifico&family=inter:wght400;600;800&display=swap" rel="stylesheet">
+  <style>
+    /* Fondo degradado tropical a pantalla completa */
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:'inter',sans-serif;
+      background: linear-gradient(135deg, #fec8a0 0%, #faaac2 30%, #f89088 70%, #ff8ca0 100%);
+      background-attachment: fixed;
+    }
+
+    .full-height{min-height:100vh}
+    .center-screen{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      text-align:center;
+      padding:24px;
+      color:white;
+      /* Transición para fade-out */
+      transition: opacity 0.5s ease-out; 
+    }
+    .welcome-title{font-family:'pacifico',cursive;font-size:clamp(28px,6vw,56px);text-shadow:0 6px 20px rgba(0,0,0,0.4)}
+    .welcome-sub{font-size:clamp(16px,2.5vw,22px);margin-top:12px;font-weight:600}
+    .enter-btn{margin-top:22px;background:#ffcb6b;color:#1f2937;padding:12px 20px;border-radius:12px;font-weight:800;border:none;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,0.25)}
+    .invitation{
+      display:none;
+      padding:20px;
+      box-sizing:border-box;
+      /* Inicialmente invisible para el fade-in */
+      opacity: 0; 
+      transition: opacity 0.5s ease-in;
+    }
+
+    /* Tarjeta con fondo blanco-anaranjado */
+    .card{
+      width:100%;
+      max-width:980px;
+      margin:24px auto;
+      background: rgba(255, 248, 240, 0.92); /* Fondo blanco-anaranjado sutil */
+      border-radius:20px;
+      padding:20px;
+      box-shadow: 0 10px 40px rgba(255, 107, 107, 0.3), /* Sombra coral suave */
+                  0 15px 50px rgba(255, 165, 0, 0.2); /* Sombra naranja */
+      border: 1px solid rgba(255, 200, 150, 0.5); /* Borde sutil anaranjado */
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Título con los nuevos emojis */
+    .main-title-container {
+      display: flex;
+      align-items: center; /* Centrar verticalmente todos los elementos */
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px; /* Espacio entre emojis y texto */
+      text-align: center;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    
+    /* Estilo para los emojis de fiesta */
+    .main-title-emoji {
+      font-size: clamp(20px, 4vw, 30px); /* Tamaño consistente */
+      flex-shrink: 0;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      line-height: 1;
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+      /* Animación */
+      display: inline-block; /* Necesario para que 'transform' funcione */
+      animation: shake 2s ease-in-out infinite;
+    }
+    
+    /* Retraso de animación para cada emoji */
+    .main-title-emoji:nth-child(1) { animation-delay: 0s; }
+    .main-title-emoji:nth-child(2) { animation-delay: 0.3s; }
+    .main-title-emoji:nth-child(3) { animation-delay: 0.6s; }
+
+    /* Definición de la animación 'shake' */
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-8deg) scale(1.05); }
+      75% { transform: rotate(8deg) scale(1.05); }
+    }
+    
+    .main-title-text {
+      font-family:'pacifico', cursive;
+      font-weight: normal;
+      font-size:clamp(28px,6vw,50px);
+      background: linear-gradient(to right, #FFA500, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(255,165,0,0.4);
+      outline:none;
+      width: auto;
+      display: inline-block;
+    }
+
+    .photo-slot{
+      background:#eee;
+      border-radius:14px;
+      overflow:hidden;
+      position:relative;
+      cursor:pointer;
+      border: 4px solid #964B00;
+      box-shadow: inset 0 0 0 2px #FFD700,
+                  0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.2s ease-in-out;
+      position: relative;
+    }
+    .photo-slot:hover {
+        transform: translateY(-3px);
+        box-shadow: inset 0 0 0 2px #FFE082,
+                    0 8px 16px rgba(0,0,0,0.3);
+    }
+
+    .photo-slot img{width:100%;height:100%;object-fit:cover;display:block;aspect-ratio:1/1}
+    .photo-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.95);background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.25));opacity:0;transition:opacity .18s}
+    .photo-slot:hover .photo-overlay{opacity:1}
+
+    .input{
+      width:100%;
+      padding:.6rem .8rem;
+      border-radius:10px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      background: white;
+      font-weight:600;
+      color: #333;
+      text-shadow: none;
+    }
+    .input::placeholder { color: #888; }
+    .input:focus {
+      outline: none;
+      border-color: #f59e0b;
+      background: #fff;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn{background:#2563eb;color:white;padding:.6rem 1rem;border-radius:12px;font-weight:700;display:inline-flex;gap:.6rem;align-items:center;cursor:pointer;text-decoration:none; box-shadow: 0 4px 8px rgba(0,0,0,0.2);}
+    .btn.secondary{background:#f59e0b;color:#1f2937}
+    
+    .small-note{font-size:13px;color:#666; text-shadow: none;}
+    .text-body {
+      color: #333;
+      font-weight: 700;
+      font-size: 18px;
+      text-shadow: none;
+    }
+    .text-preview {
+      margin-top:12px;
+      color:#333;
+      font-weight:700;
+      text-shadow: none;
+    }
+    
+    .sunset-bg {
+      background: rgba(255, 248, 240, 0.7);
+      border-radius: 0 0 18px 18px;
+      padding: 20px;
+      margin: 20px -20px -20px -20px;
+      text-align: center;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      box-shadow: inset 0 8px 20px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .sunset-bg .text-1 {
+      font-size:16px;
+      font-weight:700;
+      color: #333;
+      text-shadow: none;
+    }
+    .sunset-bg .text-2 {
+      font-size:14px;
+      color: #555;
+      text-shadow: none;
+    }
+
+    /* Estilos para los nuevos emojis del pie */
+    .footer-emojis {
+      margin-top: 10px; /* Un poco de espacio arriba */
+      font-size: clamp(20px, 4vw, 30px);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      gap: 8px; /* Espacio entre los emojis */
+    }
+    .footer-emojis span {
+      display: inline-block;
+      animation: bounce 2s infinite ease-in-out; /* Animación de rebote */
+    }
+    .footer-emojis span:nth-child(1) { animation-delay: 0s; }
+    .footer-emojis span:nth-child(2) { animation-delay: 0.2s; }
+    .footer-emojis span:nth-child(3) { animation-delay: 0.4s; }
+    .footer-emojis span:nth-child(4) { animation-delay: 0.6s; }
+    .footer-emojis span:nth-child(5) { animation-delay: 0.8s; }
+
+    /* Keyframes para la animación de rebote */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Estilos para el confeti simple (emojis) */
+    .confetti-container {
+      position: fixed; 
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999; 
+      opacity: 0; 
+      transition: opacity 1s ease-out; /* Aumentamos el desvanecimiento del contenedor */
+    }
+
+    .confetti-emoji {
+      position: absolute;
+      opacity: 0;
+      animation: fall var(--duration) linear forwards;
+      /* Propiedades CSS para la animación */
+      --start-y-offset: -50px; 
+      --end-y-offset: 105vh; /* Termina 5vh por debajo del viewport */
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate(var(--x-start), var(--start-y-offset)) rotateZ(0deg) scale(0);
+        opacity: 0;
+      }
+      1% { 
+        transform: translate(var(--x-start), var(--start-y-offset)) rotateZ(0deg) scale(var(--size));
+        opacity: 1; 
+      }
+      100% {
+        /* Se asegura de que el confeti siga cayendo hasta el final de la pantalla */
+        transform: translate(calc(var(--x-start) + var(--x-end-offset)), var(--end-y-offset)) rotateZ(var(--rotation)) scale(calc(var(--size) * 0.7)); 
+        opacity: 1; /* Mantenemos la opacidad en 1 al 100% de la animación (Se oculta al salir de la pantalla) */
+      }
+    }
+
+    @media (max-width:640px){
+      .card{padding:16px}
+      .main-title-container {
+        gap: 8px;
+      }
+      .main-title-text {
+        font-size: clamp(24px, 6vw, 40px);
+      }
+    }
+  </style>
+</head>
+<body class="full-height">
+
+  <svg width="0" height="0" style="position:absolute;z-index:-1;">
+    <defs>
+      <linearGradient id="hibiscusGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#FF8C66;stop-opacity:1" /> <stop offset="100%" style="stop-color:#FFD700;stop-opacity:1" /> </linearGradient>
+    </defs>
+  </svg>
+
+  <audio id="musicPlayer" loop>
+    <source src="https://archive.org/download/danza-kuduro/Danza%20Kuduro.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio.
+  </audio>
+
+  <div id="welcomeScreen" class="center-screen full-height">
+    <h1 class="welcome-title">🌺 ¡Aloha! 🌴</h1>
+    <p class="welcome-sub">Bienvenido a mi fiesta hawaiana – mis 18 años – Leandro 🎉</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:18px">
+      <button id="enterBtn" class="enter-btn">Entrar a la invitación 🌺</button>
+    </div>
+  </div>
+
+  <div id="invitation" class="invitation">
+    <div class="card" role="main">
+
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
+        
+        <div class="main-title-container">
+          <span class="main-title-emoji">🥳</span>
+          <span class="main-title-emoji">🎉</span>
+          <span class="main-title-emoji">🎊</span>
+          <div id="eventTitle" contenteditable="true" class="main-title-text">Fiesta Hawaiana – Mis 18 años – Leandro</div>
+        </div>
+        
+        <div style="display:flex;gap:8px;align-items:center; position: relative;">
+          <button id="playPauseBtn" class="btn secondary" title="Pausar / Reanudar música">⏯️ Música</button>
+        </div>
+      </div>
+      
+
+      <div class="photo-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:18px">
+        <label class="photo-slot" tabindex="0">
+          <input type="file" accept="image/*" class="image-input" style="display:none" />
+          <img id="photo1" src="AGC_20251026_164742859.jpg" alt="Foto 1"/>
+          <div class="photo-overlay"></div>
+        </label>
+        <label class="photo-slot" tabindex="0">
+          <input type="file" accept="image/*" class="image-input" style="display:none" />
+          <img id="photo2" src="IMG_20251026_173353.jpg" alt="Foto 2"/>
+          <div class="photo-overlay"></div>
+        </label>
+        <label class="photo-slot" tabindex="0">
+          <input type="file" accept="image/*" class="image-input" style="display:none" />
+          <img id="photo3" src="IMG_20251026_190415.jpg" alt="Foto 3"/>
+          <div class="photo-overlay"></div>
+        </label>
+        <label class="photo-slot" tabindex="0">
+          <input type="file" accept="image/*" class="image-input" style="display:none" />
+          <img id="photo4" src="IMG_20251029_035230.jpg" alt="Foto 4"/>
+          <div class="photo-overlay"></div>
+        </label>
+      </div>
+
+      <div style="text-align:center;margin-top:20px; position: relative;">
+        <div class="text-body">Estás invitado a celebrar el día</div>
+
+        <div style="display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:14px">
+          <input id="dayInput" class="input" placeholder="Día (ej: Sábado)" value="Sábado" contenteditable="true"/>
+          <input id="dateInput" class="input" placeholder="Fecha (ej: 14/02/2026)" value="15/11/2025" contenteditable="true"/>
+          <input id="timeInput" class="input" placeholder="Hora (ej: 22:00)" value="13:00 - 23:00" contenteditable="true"/>
+        </div>
+
+        <div style="margin-top:12px;max-width:720px;margin-left:auto;margin-right:auto">
+          <input id="placeInput" class="input" placeholder="Ubicación" value="Salón de Eventos SG, La Rioja" contenteditable="true"/>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+            <button id="openMaps" class="btn">📍 Abrir en Google Maps</button>
+            <button id="copyMaps" class="btn secondary">🔗 Copiar enlace</button>
+          </div>
+        </div>
+
+        <div id="previewWhen" class="text-preview"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;justify-content:center;margin-top:18px; position: relative;">
+        <a id="whatsappBtn" class="btn" target="_blank" rel="noopener noreferrer">📲 Confirmar por WhatsApp</a>
+      </div>
+
+      <div class="sunset-bg">
+        <div class="text-1">¡Código de vestimenta: 🌿 playero tropical!</div>
+        <div class="text-2">Traé buena onda y ganas de bailar. 🌺</div>
+      </div>
+
+      <hr style="margin:18px 0; border-color: rgba(100, 50, 0, 0.1);"/>
+
+      <div style="text-align: center; position: relative;">
+        <div class="footer-emojis">
+          <span>🎊</span>
+          <span>🌴</span>
+          <span>🥳</span>
+          <span>🌴</span>
+          <span>🎊</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confettiContainer" class="confetti-container"></div>
+
+  <script>
+    const music = document.getElementById('musicPlayer');
+    function tryPlayMusic(){ 
+      music.play().catch((e)=>{
+        console.log("No se pudo reproducir la música automáticamente:", e);
+      }); 
+    }
+
+    const welcome = document.getElementById('welcomeScreen');
+    const invitation = document.getElementById('invitation');
+    const enterBtn = document.getElementById('enterBtn');
+    const confettiContainer = document.getElementById('confettiContainer');
+
+    function createConfetti() {
+      const emojis = ['🎉', '🎊', '🎈', '🌴']; 
+      const totalConfetti = 150; 
+      
+      // Duración total de la animación de confeti antes de que el contenedor se desvanezca
+      const totalConfettiEffectDuration = 30000; // 30 segundos
+      const fadeOutContainerDuration = 1000; // 1 segundo para que el contenedor desaparezca
+      
+      for (let i = 0; i < totalConfetti; i++) {
+        const confetti = document.createElement('span');
+        confetti.classList.add('confetti-emoji');
+        confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        const randomSize = Math.random() * 0.8 + 0.7; 
+        confetti.style.setProperty('--size', randomSize);
+        confetti.style.fontSize = `${randomSize * 25}px`; 
+        
+        // --- CLAVE: Mayor dispersión horizontal al inicio (incluyendo fuera de los bordes) ---
+        // Genera un número entre -20vw y 120vw para que aparezcan por todo lo ancho
+        const initialX = (Math.random() * 140 - 20) + 'vw'; 
+        const startY = - (Math.random() * 100 + 50) + 'px'; // Sigue apareciendo desde arriba
+        
+        const endXOffset = (Math.random() - 0.5) * 10; // Mayor dispersión horizontal al final
+        const randomRotation = (Math.random() * 720 - 360) + 'deg'; 
+
+        confetti.style.setProperty('--x-start', initialX);
+        confetti.style.setProperty('--x-end-offset', `${endXOffset}vw`); 
+        confetti.style.setProperty('--rotation', randomRotation);
+        
+        // --- CLAVE: Duración de caída individual más variada (entre 12s y 20s) ---
+        const individualFallDuration = Math.random() * 8 + 12; // Entre 12 y 20 segundos
+        confetti.style.setProperty('--duration', `${individualFallDuration}s`);
+        
+        // --- CLAVE: Retraso de animación más extendido (entre 0s y 15s) ---
+        // Esto hace que los emojis no salgan todos a la vez, dando una sensación de lluvia constante
+        confetti.style.animationDelay = `${Math.random() * 15}s`; 
+        
+        confettiContainer.appendChild(confetti);
+      }
+      
+      confettiContainer.style.opacity = '1'; 
+      
+      setTimeout(() => {
+        // El desvanecimiento del contenedor se inicia justo antes de que el efecto total termine
+        confettiContainer.style.opacity = '0'; 
+        setTimeout(() => {
+          confettiContainer.innerHTML = ''; 
+        }, fadeOutContainerDuration); 
+      }, totalConfettiEffectDuration - fadeOutContainerDuration); 
+    }
+
+
+    function openInvitation(){
+      welcome.style.opacity = '0';
+      
+      setTimeout(() => {
+          welcome.style.display = 'none';
+          invitation.style.display = 'block';
+          document.body.style.overflow = 'auto';
+          
+          setTimeout(() => {
+              invitation.style.opacity = '1';
+              tryPlayMusic(); 
+              createConfetti(); 
+          }, 10); 
+      }, 500); 
+    }
+    
+    enterBtn.addEventListener('click', openInvitation);
+
+    document.querySelectorAll('.photo-slot').forEach((slot)=>{
+      const input = slot.querySelector('input[type=file]');
+      const img = slot.querySelector('img');
+      slot.addEventListener('click', ()=> input.click());
+      slot.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' ') input.click(); });
+      input.addEventListener('change', (ev)=>{
+        const file = ev.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt)=> img.src = evt.target.result;
+        reader.readAsDataURL(file);
+      });
+    });
+
+    const dayInput = document.getElementById('dayInput');
+    const dateInput = document.getElementById('dateInput');
+    const timeInput = document.getElementById('timeInput');
+    const placeInput = document.getElementById('placeInput');
+    const previewWhen = document.getElementById('previewWhen');
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    const openMaps = document.getElementById('openMaps');
+    const copyMaps = document.getElementById('copyMaps');
+
+    function updatePreviewAndLinks(){
+      const d = dayInput.value.trim();
+      const date = dateInput.value.trim();
+      const t = timeInput.value.trim();
+      const place = placeInput.value.trim();
+      
+      previewWhen.textContent = `${d ? d + ' • ' : ''}${date ? date + ' • ' : ''}${t ? t : ''}${place ? ' • ' + place : ''}`;
+      
+      // --- MENSAJE DE WHATSAPP FINAL Y CORRECTO ---
+      let msg = `confirmo mi presencia para festejar los 18 años de leo 🥳🎉`;
+      
+      // --- Número de WhatsApp (el que se usó antes) ---
+      const waHref = 'https://wa.me/5493804973331?text=' + encodeURIComponent(msg);
+      whatsappBtn.href = waHref;
+      
+      const mapsQuery = encodeURIComponent(place || '');
+      // El formato estándar de Google Maps para direcciones.
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${mapsQuery}`;
+
+      openMaps.onclick = ()=>{
+        if(!place){ alert('Escribí la ubicación primero.'); return; }
+        window.open(mapsUrl, '_blank');
+      };
+      copyMaps.onclick = async ()=>{
+        if(!place){ alert('Escribí la ubicación primero.'); return; }
+        try{ 
+          await navigator.clipboard.writeText(mapsUrl); 
+          copyMaps.textContent = '✅ Copiado'; 
+          setTimeout(()=> copyMaps.textContent = '🔗 Copiar enlace',1500); 
+        }
+        catch(e){ 
+          prompt('Copiá este enlace:', mapsUrl); 
+        }
+      };
+    }
+
+    [dayInput,dateInput,timeInput,placeInput].forEach(i=>i.addEventListener('input', updatePreviewAndLinks));
+    document.getElementById('eventTitle').addEventListener('input', updatePreviewAndLinks);
+    
+    updatePreviewAndLinks(); 
+
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    playPauseBtn.addEventListener('click', ()=>{
+      if(music.paused){ music.play().catch(()=>{}); playPauseBtn.textContent='⏯️ Música'; }
+      else{ music.pause(); playPauseBtn.textContent='▶️ Reproducir'; }
+    });
+    
+    document.addEventListener('DOMContentLoaded', ()=>{ 
+      document.body.style.overflow='hidden'; 
+      updatePreviewAndLinks(); 
+    });
+  </script>
+</body>
+</html>
