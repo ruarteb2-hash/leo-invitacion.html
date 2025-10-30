@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fiesta Hawaiana – Mis 18 años – Leandro</title>
+<meta name="theme-color" content="#ff9a9e">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;600;800&display=swap');
+:root{--accent:#ff6b35;--glass:rgba(255,255,255,0.96)}
+html,body{margin:0;height:100%;font-family:'Inter',sans-serif;background:linear-gradient(135deg,#ff9a9e,#fecfef,#f6d365);overflow:hidden;}
+.bg{position:fixed;inset:0;background:url('https://images.unsplash.com/photo-1507525428034-b723cf961321?auto=format&fit=crop&w=1770&q=80') center/cover no-repeat;filter:brightness(.6) saturate(.9);animation:float 14s ease-in-out infinite alternate;}
+@keyframes float{0%{transform:scale(1)}50%{transform:scale(1.03) translateY(-10px)}100%{transform:scale(1)}}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;color:#fff;text-align:center;padding:20px;}
+.welcome h1{font-family:'Pacifico',cursive;font-size:2.4em;text-shadow:0 4px 15px rgba(0,0,0,.4);}
+.enter-btn{background:#ffcb6b;color:#111;padding:12px 20px;border:none;border-radius:12px;font-weight:800;box-shadow:0 6px 20px rgba(0,0,0,.3);cursor:pointer;margin-top:16px;}
+.invite{display:none;padding:15px;overflow-y:auto;height:100vh;box-sizing:border-box;}
+.card{max-width:720px;margin:auto;background:var(--glass);border-radius:16px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,.3);}
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.photo-slot{position:relative;overflow:hidden;border-radius:10px;border:3px solid rgba(255,255,255,.6);cursor:pointer;}
+.photo-slot img{width:100%;height:100%;object-fit:cover;aspect-ratio:1/1;}
+.photo-slot input{display:none;}
+.input{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin:5px 0;font-weight:600;box-sizing: border-box;}
+.btn{background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 14px;font-weight:700;margin:6px;cursor:pointer;text-decoration:none;display:inline-block;}
+.btn.secondary{background:#f59e0b;color:#111;}
+footer{text-align:center;color:#374151;font-size:13px;margin-top:14px;}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<audio id="music" loop preload="auto">
+  <source src="https://archive.org/download/danza-kuduro/Danza%20Kuduro.mp3" type="audio/mpeg">
+</audio>
+
+<div id="welcome" class="center welcome">
+  <h1>🌺 ¡Aloha! 🌴</h1>
+  <p>Bienvenido a mi Fiesta Hawaiana – Mis 18 años – Leandro 🎉</p>
+  <button id="enter" class="enter-btn">Entrar a la invitación 🌺</button>
+</div>
+
+<div id="main" class="invite">
+  <div class="card">
+    <h2 style="font-family:Pacifico,cursive;color:#ff6b35;text-align:center;">Fiesta Hawaiana – Mis 18 años – Leandro</h2>
+    <div class="photo-grid">
+      <label class="photo-slot"><input type="file" accept="image/*"><img src="https://placehold.co/600x600/fbbf24/000?text=Foto+1"></label>
+      <label class="photo-slot"><input type="file" accept="image/*"><img src="https://placehold.co/600x600/ec4899/fff?text=Foto+2"></label>
+      <label class="photo-slot"><input type="file" accept="image/*"><img src="https://placehold.co/600x600/10b981/fff?text=Foto+3"></label>
+      <label class="photo-slot"><input type="file" accept="image/*"><img src="https://placehold.co/600x600/3b82f6/fff?text=Foto+4"></label>
+    </div>
+
+    <input id="day" class="input" placeholder="Día" value="Sábado">
+    <input id="date" class="input" placeholder="Fecha" value="14/02/2026">
+    <input id="time" class="input" placeholder="Hora" value="22:00">
+    <input id="place" class="input" placeholder="Ubicación" value="Av. Ejemplo 123, Ciudad">
+
+    <button id="map" class="btn">📍 Ver en Google Maps</button>
+    <a id="wa" class="btn secondary" target="_blank">📲 Confirmar asistencia</a>
+
+    <footer>Hecho con cariño 💛</footer>
+  </div>
+</div>
+
+<script>
+// 1. Declaramos todas las variables
+const welcome = document.getElementById('welcome');
+const main = document.getElementById('main');
+const btn = document.getElementById('enter');
+const music = document.getElementById('music');
+const map = document.getElementById('map');
+const wa = document.getElementById('wa');
+const day = document.getElementById('day');
+const date = document.getElementById('date');
+const time = document.getElementById('time');
+const place = document.getElementById('place');
+
+// 2. Asignamos la función al botón de bienvenida
+// Esto ahora funciona porque no hay errores antes
+btn.onclick = () => {
+  welcome.style.display = 'none';
+  main.style.display = 'block';
+  document.body.style.overflow = 'auto';
+  music.play().catch(() => {});
+};
+
+// 3. Asignamos funciones al resto de elementos
+// Carga de fotos
+document.querySelectorAll('.photo-slot input').forEach(inp => {
+  inp.addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = x => inp.nextElementSibling.src = x.target.result;
+    r.readAsDataURL(f);
+  });
+});
+
+// Botón de Google Maps (URL CORREGIDA)
+map.onclick = () => {
+  const q = encodeURIComponent(place.value);
+  // ESTA ES LA LÍNEA CORREGIDA:
+  window.open(`http://googleusercontent.com/maps.google.com/6`, '_blank');
+};
+
+// Botón de WhatsApp
+wa.onclick = () => {
+  const msg = `¡Hola! Confirmo mi asistencia a la fiesta. Día: ${day.value}, Fecha: ${date.value}, Hora: ${time.value}, Lugar: ${place.value}.`;
+  wa.href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+};
+</script>
+</body>
+</html>
